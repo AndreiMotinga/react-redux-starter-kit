@@ -16,7 +16,8 @@ const mapActionCreators = {
 }
 
 const mapStateToProps = (state) => ({
-  dashboard: state.dashboard
+  dashboard: state.dashboard,
+  session: state.session
 })
 
 class DashboardContainer extends React.Component {
@@ -92,6 +93,10 @@ class DashboardContainer extends React.Component {
   }
 
   render() {
+    if(this.props.session.isNotLoggedIn) {
+      return <h4>Please login in order to access dashboard</h4>
+    }
+
     return (
         <Dashboard {...this.props}
           editedItemIndex={this.state.editedItemIndex}
