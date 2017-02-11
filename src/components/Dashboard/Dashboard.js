@@ -11,7 +11,12 @@ export const Dashboard = (props) => {
     }
     return <h4
              key={i}
-             onClick={props.itemOnEdit.bind(undefined,i)}
+             id={i}
+             draggable='true'
+             onDragStart={props.handleOnDragStart}
+             onDrop={props.handleOnDrop}
+             onDragOver={props.handleOnDragOver}
+             onClick={props.itemOnEdit.bind(undefined, i)}
              style={{cursor: 'pointer'}}
             >
               {item.label}

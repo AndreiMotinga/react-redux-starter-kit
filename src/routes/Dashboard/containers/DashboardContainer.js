@@ -3,14 +3,16 @@ import { connect } from 'react-redux'
 import {
   dashboardVisitIncrement,
   dashboardAddItem,
-  dashboardEditItem
+  dashboardEditItem,
+  dashboardReorderItems
 } from '../modules/dashboard'
 import Dashboard from 'components/Dashboard'
 
 const mapActionCreators = {
   dashboardVisitIncrement,
   dashboardAddItem: (value) => dashboardAddItem(value),
-  dashboardEditItem: (value) => dashboardEditItem(value)
+  dashboardEditItem: (value) => dashboardEditItem(value),
+  dashboardReorderItems: (value) => dashboardReorderItems(value)
 }
 
 const mapStateToProps = (state) => ({
@@ -24,12 +26,42 @@ class DashboardContainer extends React.Component {
     this.inputOnChange = this.inputOnChange.bind(this)
     this.itemOnEdit = this.itemOnEdit.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.handleOnDragStart = this.handleOnDragStart.bind(this)
+    this.handleOnDrop = this.handleOnDrop.bind(this)
+    this.handleOnDragOver = this.handleOnDragOver.bind(this)
 
     this.state = {
       inputValue: '',
-      editedItemIndex: null
+      editedItemIndex: null,
+      draggedItemIndex: null
     }
   }
+
+  handleOnDragStart(e) {
+    const id = e.target.id
+    this.setState({ draggedItemIndex: id });
+  }
+
+  handleOnDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  handleOnDrop(e) {
+    const droppedItemId = e.currentTarget.id
+    let reorderVal = {
+      start: parseInt(this.state.draggedItemIndex),
+      end: parseInt(droppedItemId)
+    }
+
+    const reorderIsCorrect = !isNaN(reorderVal.start) && !isNaN(reorderVal.end) && reorderVal.start !== reorderVal.end
+    if(reorderIsCorrect) {
+      this.props.dashboardReorderItems(reorderVal)
+    }
+
+    this.setState({ draggedItemIndex: null });
+  }
+
   componentDidMount() {
     this.props.dashboardVisitIncrement();
   }
@@ -67,6 +99,9 @@ class DashboardContainer extends React.Component {
           inputValue={this.state.inputValue}
           inputOnChange={this.inputOnChange}
           onSubmit={this.onSubmit}
+          handleOnDragStart={this.handleOnDragStart}
+          handleOnDrop={this.handleOnDrop}
+          handleOnDragOver={this.handleOnDragOver}
         />
     )
   }
