@@ -4,6 +4,7 @@ import classes from './Dashboard.scss'
 export const Dashboard = (props) => {
   const listJSX = props.dashboard.dashboardItems.map((item, i) => {
     let itemJSX;
+    let foobar
     if(props.editedItemIndex === i) {
       itemJSX = <p><b><u>{item.label}</u></b></p>
     } else {
